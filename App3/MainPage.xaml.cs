@@ -45,8 +45,6 @@ namespace App3
 
         private async void pin_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs args)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
-            {
                 if (args.Edge.CompareTo(GpioPinEdge.RisingEdge) == 0)
                 {
                     //Motion Detected UI
@@ -72,20 +70,28 @@ namespace App3
                     //Display No Motion Detected UI
                     UiNoMotion();
                 }
+
+        }
+
+        private async void UiAlert()
+        {
+            //Make sure we are on th UI Thread
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                grid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0));
+                message.Text = "Motion Detected";
             });
 
         }
 
-        private void UiAlert()
+        private async void UiNoMotion()
         {
-            grid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0));
-            message.Text = "Motion Detected";
-        }
-
-        private void UiNoMotion()
-        {
-            grid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 255, 0));
-            message.Text = "Monitoring";
+            //Make sure we are on th UI Thread
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                grid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 255, 0));
+                message.Text = "Monitoring";
+            });
         }
 
     }
